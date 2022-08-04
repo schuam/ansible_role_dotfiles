@@ -1,0 +1,8 @@
+---
+- name: Make sure git is installed.
+  pacman:
+    name: "git"
+    state: present
+    update_cache: yes
+  become: true
+

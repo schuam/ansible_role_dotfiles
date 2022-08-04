@@ -1,9 +1,6 @@
 ---
-- name: Make sure git is installed.
-  pacman:
-    name: "git"
-    state: present
-    update_cache: yes
+- name: Include OS-specific tasks.
+  include_tasks: "{{ ansible_os_family }}_pre_tasks.yml"
 
 - name: Ensure dotfiles repo is cloned locally.
   git:
