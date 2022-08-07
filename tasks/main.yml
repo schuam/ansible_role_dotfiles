@@ -1,9 +1,9 @@
 ---
 - name: Include OS-specific tasks.
-  include_tasks: "{{ ansible_os_family }}_pre_tasks.yml"
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}_pre_tasks.yml"
 
 - name: Ensure dotfiles repo is cloned locally.
-  git:
+  ansible.builtin.git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_repo_local_destination }}"
     version: "{{ dotfiles_repo_version }}"
@@ -11,7 +11,7 @@
   become: false
 
 - name: Ensure all bash related configured dotfiles are links.
-  command: "ls -F ~/{{ item }}"
+  ansible.builtin.command: "ls -F ~/{{ item }}"
   register: existing_bash_dotfile_info
   failed_when: false
   check_mode: false
@@ -20,7 +20,7 @@
   become: false
 
 - name: Remove existing bash dotfiles if a replacement is being linked.
-  file:
+  ansible.builtin.file:
     path: "~/{{ item.item }}"
     state: absent
   when: "'@' not in item.stdout"
@@ -30,7 +30,7 @@
     label: "{{ item.item }}"
 
 - name: Link bash dotfiles into home directory.
-  file:
+  ansible.builtin.file:
     src: "{{ dotfiles_repo_local_destination }}/bash/{{ item }}"
     dest: "~/{{ item }}"
     state: link
@@ -38,7 +38,8 @@
   with_items: "{{ bash_configs }}"
 
 - name: Source .bash_profile and make $XDG_CONFIG_HOME available.
-  shell: "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_CONFIG_HOME'"
+  ansible.builtin.shell:
+    "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_CONFIG_HOME'"
   failed_when: false
   check_mode: false
   changed_when: false
@@ -46,7 +47,8 @@
   register: xdg_config_home
 
 - name: Source .bash_profile and make $XDG_DATA_HOME available.
-  shell: "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_DATA_HOME'"
+  ansible.builtin.shell:
+    "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_DATA_HOME'"
   failed_when: false
   check_mode: false
   changed_when: false
@@ -54,15 +56,21 @@
   register: xdg_data_home
 
 - name: Find configurations in {{ dotfiles_repo_local_destination }}/.config
-  command: "find {{ dotfiles_repo_local_destination }}/.config -mindepth 1 -maxdepth 1 -printf '%f\n'"
+  ansible.builtin.command:
+    "find {{ dotfiles_repo_local_destination }}/.config \
+      -mindepth 1 \
+      -maxdepth 1 \
+      -printf '%f\n' \
+    "
   failed_when: false
   check_mode: false
   changed_when: false
   register: configs
   become: false
 
-- name: Ensure {{ xdg_config_home.stdout }} and {{ xdg_data_home.stdout }} exist.
-  file:
+- name:
+    Ensure {{ xdg_config_home.stdout }} and {{ xdg_data_home.stdout }} exist.
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "0700"
@@ -74,7 +82,7 @@
     label: "{{ item }}"
 
 - name: Ensure all configured dotfiles are links.
-  command: "ls -F {{ xdg_config_home.stdout }}/{{ item }}"
+  ansible.builtin.command: "ls -F {{ xdg_config_home.stdout }}/{{ item }}"
   register: existing_dotfile_info
   failed_when: false
   check_mode: false
@@ -83,7 +91,7 @@
   become: false
 
 - name: Remove existing dotfiles if a replacement is being linked.
-  file:
+  ansible.builtin.file:
     path: "{{ xdg_config_home.stdout }}/{{ item.item }}"
     state: absent
   when: "'@' not in item.stdout"
@@ -93,7 +101,7 @@
     label: "{{ item.item }}"
 
 - name: Link dotfiles into {{ xdg_config_home.stdout }}.
-  file:
+  ansible.builtin.file:
     src: "{{ dotfiles_repo_local_destination }}/.config/{{ item }}"
     dest: "{{ xdg_config_home.stdout }}/{{ item }}"
     state: link
@@ -101,7 +109,7 @@
   with_items: "{{ configs.stdout_lines }}"
 
 - name: Ensure {{ xdg_data_home.stdout }}/nvim/site/autoload exists.
-  file:
+  ansible.builtin.file:
     path: "{{ xdg_data_home.stdout }}/nvim/site/autoload"
     state: directory
     mode: "0700"
@@ -111,10 +119,11 @@
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     dest: "{{ xdg_data_home.stdout }}/nvim/site/autoload/plug.vim"
+    mode: "0644"
   become: false
 
 - name: Install neovim plugins
-  shell: >
+  ansible.builtin.shell: >
     XDG_CONFIG_HOME="{{ xdg_config_home.stdout }}"
     XDG_DATA_HOME="{{ xdg_data_home.stdout }}"
     nvim --headless +PlugInstall +qall
