@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: dotfiles
+  namespace: schuam
   author: Andreas Schuster
   description: Role to install my dotfiles on new laptop/desktop computers
   license: license (MIT)
