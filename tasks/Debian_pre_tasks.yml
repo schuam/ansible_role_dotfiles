@@ -1,0 +1,6 @@
+---
+- name: Make sure git is installed.
+  ansible.builtin.apt:
+    name: "git"
+    state: present
+  become: true

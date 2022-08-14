@@ -1,38 +1,91 @@
-Role Name
-=========
+# Dotfiles
 
-A brief description of the role goes here.
+This role can be used to install my
+[dotfiles](https://github.com/schuam/.dotfiles) on an ArchLinux or Ubuntu
+system. Well, I guess this should work on pretty much any other Debian system
+as well, but I haven't checked that.
 
-Requirements
-------------
+Whenever possible, I try to organize my configuration files according to the
+[XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html).
+Which means that that configuration files (dotfiles) for program "XYZ" should
+be placed in the directory $XDG_CONFIG_HOME/XYZ/. A lot of programs follow this
+convention and expect there configuration files at that location. Some programs
+don't follow this convention, but make it possible to use it anyway by letting
+the user set certain environment variables. In such cases, I set these
+variables in my .bash_profile file. And than there are programs where it's just
+not possible to place the dotfiles into a directory under $XDG_CONFIG_HOME.
+For most of these programs, I don't organize their configuration in my dotfiles
+repository, with just one exception **bash** (Why bash?).
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Anyways, for the most part, the structure of my dotfiles repository looks like
+this:
 
-Role Variables
---------------
+```bash
+.dotfiles
+└── .config
+    ├── <PROGRAM_1>
+    └── <PROGRAM_2>
+```
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+So "all" this role has to do is: create symlinks in $XDG_CONFIG_HOME to the
+<PROGRAM_x> directories in the repository. These symlinks just have to have the
+same name as the target directories. And that's what this rule does plus some
+extra treatment for bash.
 
-Dependencies
-------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Requirements
 
-Example Playbook
-----------------
+Git has to be installed on the system you run the role against, but you don't
+really have to take care of it beforehand, because there is a pre task that
+will make sure Git is indeed installed.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+## Role Variables
+
+In defaults/main.yml you can find the following variables. They determine the
+location of the git repository holding the dotfiles, the version (branch) that
+is supposed to be used, and the destination on the local system where the git
+repo will be cloned. The last variables in this list is actually not needed,
+since the repo in cloned via https and not SSH, but I just have it in here for
+good measure.
+
+If you want to use this role to install my dotfiles on your system, feel free
+to to so. If you want it to use your own dotfiles, and maybe another location
+or the repo on your system, just change these variables.
+
+- dotfiles_repo: "https://github.com/schuam/.dotfiles.git"
+- dotfiles_repo_version: main
+- dotfiles_repo_local_destination: "~/.dotfiles"
+- dotfiles_repo_accept_hostkey: false
+
+Also in defaults/main.yml you can find a list of bash configuration files. The
+reason for the need of that list is explained in the description of the role
+(first section of this README).
+
+- bash_configs:
+    - .bash_logout
+    - .bashrc
+    - .bash_profile
+    - .bash
+
+
+## Dependencies
+
+None
+
+
+## Example Playbook
+
+    - hosts: localhost
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: schuam.dotfiles }
 
-License
--------
+## License
 
-BSD
+MIT
 
-Author Information
-------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+## Author Information
+
+This role was created in 2022 by [Andreas Schuster](https://www.schuam.de/).
+
