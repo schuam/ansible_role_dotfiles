@@ -3,5 +3,5 @@
   community.general.pacman:
     name: "git"
     state: present
-    update_cache: true
+    update_cache: false
   become: true
