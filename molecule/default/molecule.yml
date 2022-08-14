@@ -8,8 +8,11 @@ lint: |
   yamllint .
   ansible-lint
 platforms:
-  - name: instance
-    image: quay.io/centos/centos:stream8
+  - name: ubuntu
+    image: "schuam/docker_ubuntu2204_ansible"
+    pre_build_image: true
+  - name: arch
+    image: "schuam/docker_archlinux_ansible"
     pre_build_image: true
 provisioner:
   name: ansible
