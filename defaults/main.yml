@@ -1,8 +1,8 @@
 ---
 dotfiles_repo: "https://github.com/schuam/.dotfiles.git"
 dotfiles_repo_version: main
-dotfiles_repo_accept_hostkey: false
 dotfiles_repo_local_destination: "~/.dotfiles"
+dotfiles_repo_accept_hostkey: false
 
 bash_configs:
   - .bash_logout
