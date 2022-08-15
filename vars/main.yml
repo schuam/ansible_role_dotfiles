@@ -1,4 +1,10 @@
 ---
+bash_configs:
+  - .bash_logout
+  - .bashrc
+  - .bash_profile
+  - .bash
+
 directory_types:
   - opt_type
   - xdg_cache_home_type
