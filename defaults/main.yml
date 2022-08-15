@@ -2,4 +2,5 @@
 dotfiles_repo: "https://github.com/schuam/.dotfiles.git"
 dotfiles_repo_version: main
 dotfiles_repo_local_destination: "~/.dotfiles"
+dotfiles_repo_remote_name: "github"
 dotfiles_repo_accept_hostkey: false
