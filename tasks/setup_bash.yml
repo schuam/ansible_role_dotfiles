@@ -1,0 +1,27 @@
+---
+- name: Ensure all bash related configured dotfiles are links.
+  ansible.builtin.command: "ls -F ~/{{ item }}"
+  register: existing_bash_dotfile_info
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  with_items: "{{ bash_configs }}"
+  become: false
+
+- name: Remove existing bash dotfiles if a replacement is being linked.
+  ansible.builtin.file:
+    path: "~/{{ item.item }}"
+    state: absent
+  when: "'@' not in item.stdout"
+  become: false
+  loop: "{{ existing_bash_dotfile_info.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Link bash dotfiles into home directory.
+  ansible.builtin.file:
+    src: "{{ dotfiles_repo_local_destination }}/bash/{{ item }}"
+    dest: "~/{{ item }}"
+    state: link
+  become: false
+  with_items: "{{ bash_configs }}"

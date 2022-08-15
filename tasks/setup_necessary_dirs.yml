@@ -1,0 +1,6 @@
+---
+- name: Make necessary directories.
+  ansible.builtin.include_tasks: make_dirs.yml
+  loop: "{{ directory_types }}"
+  loop_control:
+    loop_var: "type"
