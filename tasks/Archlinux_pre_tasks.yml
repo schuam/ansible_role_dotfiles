@@ -1,7 +1,0 @@
----
-- name: Make sure git is installed.
-  community.general.pacman:
-    name: "git"
-    state: present
-    update_cache: false
-  become: true

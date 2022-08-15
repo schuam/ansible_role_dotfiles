@@ -58,7 +58,7 @@ or the repo on your system, just change these variables.
 - dotfiles_repo_local_destination: "~/.dotfiles"
 - dotfiles_repo_accept_hostkey: false
 
-Also in defaults/main.yml you can find a list of bash configuration files. The
+In vars/main.yml you can find a list of bash configuration files. The
 reason for the need of that list is explained in the description of the role
 (first section of this README).
 
@@ -67,6 +67,18 @@ reason for the need of that list is explained in the description of the role
     - .bashrc
     - .bash_profile
     - .bash
+
+Also in vars/main.yml some directories are defined that will be created. Some
+programs need them otherwise they would put stuff in my home directory which I
+don't want. The **directory_types** list is a list of different types of
+directories that are supposed to be created. The other variables are diconaries
+that each define a **base** directory and a list of **dirs** that are created
+under the base directory.
+
+- directory_types
+- opt_type_dirs
+- xdg_cache_home_type_dirs
+- xdg_data_home_type_dirs
 
 
 ## Dependencies

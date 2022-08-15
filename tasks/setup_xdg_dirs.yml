@@ -1,0 +1,40 @@
+---
+- name: Source .bash_profile and make $XDG_CACHE_HOME available.
+  ansible.builtin.shell:
+    "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_CACHE_HOME'"
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  become: false
+  register: xdg_cache_home
+
+- name: Source .bash_profile and make $XDG_CONFIG_HOME available.
+  ansible.builtin.shell:
+    "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_CONFIG_HOME'"
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  become: false
+  register: xdg_config_home
+
+- name: Source .bash_profile and make $XDG_DATA_HOME available.
+  ansible.builtin.shell:
+    "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_DATA_HOME'"
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  become: false
+  register: xdg_data_home
+
+- name: Ensure XDG directories exist.
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  become: false
+  loop:
+    - "{{ xdg_cache_home.stdout }}"
+    - "{{ xdg_config_home.stdout }}"
+    - "{{ xdg_data_home.stdout }}"
+  loop_control:
+    label: "{{ item }}"
