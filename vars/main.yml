@@ -1,2 +1,26 @@
 ---
-# vars file for ansible_role_dotfiles
+directory_types:
+  - opt_type
+  - xdg_cache_home_type
+  - xdg_data_home_type
+
+opt_type_dirs:
+  base: "/opt"
+  dirs:
+    - "go"
+    - "ruby"
+    - "xmonad"
+
+xdg_cache_home_type_dirs:
+  base: "{{ xdg_cache_home.stdout }}"
+  dirs:
+    - "xmonad"
+
+xdg_data_home_type_dirs:
+  base: "{{ xdg_data_home.stdout }}"
+  dirs:
+    - "vim/backup"
+    - "vim/swap"
+    - "vim/undo"
+    - "xmonad"
+    - "tig"

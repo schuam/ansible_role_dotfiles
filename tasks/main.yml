@@ -37,6 +37,15 @@
   become: false
   with_items: "{{ bash_configs }}"
 
+- name: Source .bash_profile and make $XDG_CACHE_HOME available.
+  ansible.builtin.shell:
+    "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_CACHE_HOME'"
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  become: false
+  register: xdg_cache_home
+
 - name: Source .bash_profile and make $XDG_CONFIG_HOME available.
   ansible.builtin.shell:
     "bash -c 'source ~/.bash_profile 2>/dev/null && echo $XDG_CONFIG_HOME'"
@@ -55,6 +64,20 @@
   become: false
   register: xdg_data_home
 
+- name:
+    Ensure XDG directories exist.
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  become: false
+  loop:
+    - "{{ xdg_cache_home.stdout }}"
+    - "{{ xdg_config_home.stdout }}"
+    - "{{ xdg_data_home.stdout }}"
+  loop_control:
+    label: "{{ item }}"
+
 - name: Find configurations in {{ dotfiles_repo_local_destination }}/.config
   ansible.builtin.command:
     "find {{ dotfiles_repo_local_destination }}/.config \
@@ -67,19 +90,6 @@
   changed_when: false
   register: configs
   become: false
-
-- name:
-    Ensure {{ xdg_config_home.stdout }} and {{ xdg_data_home.stdout }} exist.
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: "0700"
-  become: false
-  loop:
-    - "{{ xdg_config_home.stdout }}"
-    - "{{ xdg_data_home.stdout }}"
-  loop_control:
-    label: "{{ item }}"
 
 - name: Ensure all configured dotfiles are links.
   ansible.builtin.command: "ls -F {{ xdg_config_home.stdout }}/{{ item }}"
@@ -131,3 +141,9 @@
   check_mode: false
   changed_when: false
   become: false
+
+- name: Make necessary directories.
+  ansible.builtin.include_tasks: make_dirs.yml
+  loop: "{{ directory_types }}"
+  loop_control:
+    loop_var: "type"
