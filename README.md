@@ -1,4 +1,4 @@
-# Dotfiles
+# Ansible Role: Dotfiles
 
 This ansible role can be used to install my
 [dotfiles](https://github.com/schuam/.dotfiles) on an ArchLinux or Ubuntu
