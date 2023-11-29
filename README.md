@@ -36,9 +36,7 @@ extra treatment for `bash`.
 
 ## Requirements
 
-Git has to be installed on the system you run the role against. You don't
-really have to take care of it beforehand, because there is a pre task that
-will make sure Git is indeed installed.
+Git has to be installed on the system you run the role against.
 
 
 ## Role Variables
