@@ -5,9 +5,10 @@
       "{{ lookup('ansible.builtin.vars', type + '_dirs')['base'] }}/{{ dir }}"
     state: "directory"
     mode: "0700"
-    group: "{{ ansible_facts['user_id'] }}"
-    owner: "{{ ansible_facts['user_id'] }}"
+    group: "{{ ansible_user }}"
+    owner: "{{ ansible_user }}"
   loop: "{{ lookup('ansible.builtin.vars', type + '_dirs')['dirs'] }}"
   loop_control:
     loop_var: "dir"
   become: true
+
