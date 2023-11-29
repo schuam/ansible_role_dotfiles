@@ -3,5 +3,5 @@
   ansible.builtin.package:
     name: "git"
     state: present
-    update_cache: false
+    update_cache: true
   become: true
