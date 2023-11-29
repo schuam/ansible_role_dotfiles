@@ -10,5 +10,5 @@
   loop: "{{ lookup('ansible.builtin.vars', type + '_dirs')['dirs'] }}"
   loop_control:
     loop_var: "dir"
-  become: true
+  become: false
 
