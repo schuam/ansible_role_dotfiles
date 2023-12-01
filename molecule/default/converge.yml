@@ -1,6 +1,10 @@
 ---
 - name: Converge
   hosts: all
+
+  vars:
+    ansible_user: root
+
   tasks:
     - name: "Include ansible_role_dotfiles"
       ansible.builtin.include_role:
