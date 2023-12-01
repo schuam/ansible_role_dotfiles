@@ -6,6 +6,11 @@
     ansible_user: root
 
   tasks:
+    - name: Make sure Git is installed.
+      ansible.builtin.package:
+        name: git
+        state: present
+
     - name: "Include ansible_role_dotfiles"
       ansible.builtin.include_role:
         name: "ansible_role_dotfiles"
